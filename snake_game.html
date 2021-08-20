@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Snake Game</title>
+</head>
+
+<body>
+  <canvas id="stage" width="800" height="800"></canvas>
+
+  <script>
+    window.onload = function () {
+      var stage = document.getElementById('stage');
+      var context = stage.getContext('2d');
+
+      const velocity = 1;
+      var velocity_x = 0;
+      var velocity_y = 0;
+      var head_x = 10;
+      var head_y = 15;
+      var squareSize = 20;
+      var squareAmount = 40;
+      var apple_x = 15;
+      var apple_y = 15;
+      var trail = [];
+      var tail = 5;
+
+      document.addEventListener('keydown', move);
+      setInterval(game, 1000 / 15);
+
+      function game() {
+        head_x += velocity_x;
+        head_y += velocity_y;
+
+        if (head_x < 0) {
+          head_x = squareAmount - 1;
+        }
+
+        if (head_x > squareAmount - 1) {
+          head_x = 0;
+        }
+
+        if (head_y < 0) {
+          head_y = squareAmount - 1;
+        }
+
+        if (head_y > squareAmount - 1) {
+          head_y = 0;
+        }
+
+        context.fillStyle = 'black';
+        context.fillRect(0, 0, stage.width, stage.height);
+
+        context.fillStyle = 'orange';
+        context.fillRect(apple_x * squareSize, apple_y * squareSize, squareSize, squareSize);
+
+        context.fillStyle = 'gray';
+        for (var i = 0; i < trail.length; i++) {
+          context.fillRect(trail[i].x * squareSize, trail[i].y * squareSize, squareSize, squareSize);
+
+          if (trail[i].x == head_x && trail[i].y == head_y) {
+            velocity_x = 0;
+            velocity_y = 0;
+            tail = 5;
+          }
+        }
+
+        trail.push({ x: head_x, y: head_y });
+
+        while (trail.length > tail) {
+          trail.shift();
+        }
+
+        if (apple_x == head_x && apple_y == head_y) {
+          tail++;
+          apple_x = Math.floor(Math.random() * squareAmount);
+          apple_y = Math.floor(Math.random() * squareAmount);
+        }
+      }
+
+      function move(event) {
+        switch (event.keyCode) {
+          case 37: //left
+            velocity_x = -velocity;
+            velocity_y = 0;
+            break;
+          case 38: //up
+            velocity_x = 0;
+            velocity_y = -velocity;
+            break;
+          case 39: //right
+            velocity_x = velocity;
+            velocity_y = 0;
+            break;
+          case 40: //down
+            velocity_x = 0;
+            velocity_y = velocity;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
